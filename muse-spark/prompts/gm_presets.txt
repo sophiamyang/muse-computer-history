@@ -1,0 +1,141 @@
+program   0  Grand Piano
+program   0  Standard 1
+program   1  Bright Grand Piano
+program   1  Standard 2
+program   2  Electric Grand Piano
+program   2  Standard 3
+program   3  Honky-Tonk Piano
+program   4  Tine Electric Piano
+program   5  FM Electric Piano
+program   6  Harpsichord
+program   7  Clavinet
+program   8  Celeste
+program   8  Room
+program   9  Glockenspiel
+program  10  Music Box
+program  11  Vibraphone
+program  12  Marimba
+program  13  Xylophone
+program  14  Tubular Bells
+program  15  Dulcimer
+program  16  Tonewheel Organ
+program  16  Power
+program  17  Percussive Organ
+program  18  Rock Organ
+program  19  Pipe Organ
+program  20  Reed Organ
+program  21  Accordion
+program  22  Harmonica
+program  23  Bandoneon
+program  24  Nylon Guitar
+program  24  Electronic
+program  25  Steel Guitar
+program  25  808/909
+program  26  Jazz Guitar
+program  26  Dance
+program  27  Clean Guitar
+program  28  Muted Guitar
+program  29  Overdrive Guitar
+program  30  Distortion Guitar
+program  31  Guitar Harmonics
+program  32  Acoustic Bass
+program  32  Jazz
+program  33  Finger Bass
+program  34  Pick Bass
+program  35  Fretless Bass
+program  36  Slap Bass 1
+program  37  Slap Bass 2
+program  38  Synth Bass 1
+program  39  Synth Bass 2
+program  40  Violin
+program  40  Brush
+program  41  Viola
+program  42  Cello
+program  43  Double Bass
+program  44  Tremolo Strings
+program  45  Pizzicato Strings
+program  46  Orchestral Harp
+program  47  Timpani
+program  48  Fast Strings
+program  48  Orchestral
+program  49  Slow Strings
+program  50  Synth Strings 1
+program  51  Synth Strings 2
+program  52  Concert Choir
+program  53  Voice Oohs
+program  54  Synth Voice
+program  55  Orchestra Hit
+program  56  Trumpet
+program  56  SFX
+program  57  Trombone
+program  58  Tuba
+program  59  Muted Trumpet
+program  60  French Horns
+program  61  Brass Section
+program  62  Synth Brass 1
+program  63  Synth Brass 2
+program  64  Soprano Sax
+program  65  Alto Sax
+program  66  Tenor Sax
+program  67  Baritone Sax
+program  68  Oboe
+program  69  English Horn
+program  70  Bassoon
+program  71  Clarinet
+program  72  Piccolo
+program  73  Flute
+program  74  Recorder
+program  75  Pan Flute
+program  76  Bottle Blow
+program  77  Shakuhachi
+program  78  Whistle
+program  79  Ocarina
+program  80  Square Lead
+program  81  Saw Lead
+program  82  Synth Calliope
+program  83  Chiffer Lead
+program  84  Charang
+program  85  Solo Vox
+program  86  5th Saw Wave
+program  87  Bass & Lead
+program  88  Fantasia
+program  89  Warm Pad
+program  90  Polysynth
+program  91  Space Voice
+program  92  Bowed Glass
+program  93  Metal Pad
+program  94  Halo Pad
+program  95  Sweep Pad
+program  96  Ice Rain
+program  97  Soundtrack
+program  98  Crystal
+program  99  Atmosphere
+program 100  Brightness
+program 101  Goblin
+program 102  Echo Drops
+program 103  Star Theme
+program 104  Sitar
+program 105  Banjo
+program 106  Shamisen
+program 107  Koto
+program 108  Kalimba
+program 109  Bagpipes
+program 110  Fiddle
+program 111  Shenai
+program 112  Tinker Bell
+program 113  Agogo
+program 114  Steel Drums
+program 115  Wood Block
+program 116  Taiko Drum
+program 117  Melodic Tom
+program 118  Synth Drum
+program 119  Reverse Cymbal
+program 120  Fret Noise
+program 121  Breath Noise
+program 122  Seashore
+program 123  Birds
+program 124  Telephone 1
+program 125  Helicopter
+program 126  Applause
+program 127  Gun Shot
+program 127  CM-64/32L

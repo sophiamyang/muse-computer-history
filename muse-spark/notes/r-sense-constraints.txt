@@ -1,0 +1,9 @@
+HARD CONSTRAINTS for this revision (the film, score and website depend on them):
+- Keep id, year, title, act.dur and act.prompt. Keep floor and act.at within ±60 px unless the review needs a move.
+- Jolly is drawn by the runtime at a FIXED 330 px tall: you cannot resize her. Make props, machines and portals bigger, bolder and better placed instead, and keep her body (act.at ± 115 px, from floor − 330 to floor) from covering the prop, the reaction and the portal.
+- Portals: keep the same names; the cover width max(w, h·16/9) must stay between 240 and 640 px (zoom 3–8×). The push portal must be clearly framed, bright and readable for the whole last 2 s before the handover, with s.peek() visible inside it.
+- act.hotspot must sit exactly on the prop she uses (≥ 120×120 px); spots stay on visible objects, clear of the badge (x > 1380, y < 200) and the caption area (x < 760, y > 860). Keep page, spots and badge text.
+- Keep music. Keep sfx kinds; you may shift their u to land on the new action beats.
+- Contrast: give Jolly a clear silhouette against what's behind her (a darker or more coloured background behind her body, a soft contact shadow, or a subtle darker backdrop element), without changing her colours beyond the existing characterStyle.
+- Calm and clear beats clutter: remove or quieten detail that competes with the prop, the reaction and the portal.
+- Deterministic, cached backgrounds, every save balanced by a restore, no new globals (keep the IIFE). Remember: U.rrect and U.hatch start a new path, so never build a ring from two U.rrect calls.

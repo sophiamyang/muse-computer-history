@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A Short History of Computing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2214%22 fill=%22%23F56A2B%22/%3E%3C/svg%3E">
+<!-- The film as a place to explore: the whole window is the scene. Nothing to page through; you click the things in
+     the scene. The character waits at each action until you click its prop (act.hotspot), then waits at the object
+     until you click it to go through. Hints appear only if you hesitate (cfg.hintDelay) or click the wrong spot;
+     scene.spots are extra things to click for a note. Text, colours, fonts and the call to action come from `site` in
+     film.js and `page` in each scene (see references/live.md). pages.html is the step-through alternative. -->
+<style>
+  :root {
+    /* layout: the scene fills the window; a few quiet labels float over it */
+    --bg: #0f0e0c; --fg: #f6f1e8; --muted: #c9c0b2; --accent: #e9b44c; --glass: rgba(16, 14, 12, .62);
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }   /* [film fix] .center { display: grid } overrode the hidden attribute, so the end card showed on load */
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--body); overflow: hidden; }
+  #blur { position: fixed; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); filter: blur(36px) brightness(.55) saturate(1.1); }
+  #stage { position: fixed; left: 50%; top: 50%; translate: -50% -50%; width: min(100vw, 100svh * 16 / 9); aspect-ratio: 16 / 9; max-width: 100%; }
+  #stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #overlay { touch-action: manipulation; }
+  .hud { position: fixed; inset: 0; pointer-events: none; padding: max(14px, env(safe-area-inset-top, 0px)) 16px max(14px, env(safe-area-inset-bottom, 0px)); display: grid; grid-template-rows: auto 1fr auto; transition: opacity .6s ease; }
+  body.quiet .hud .top { opacity: 0; }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: opacity .6s ease; }
+  .brand { font: 600 15px var(--display); letter-spacing: .02em; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+  .tools { display: flex; gap: 8px; pointer-events: auto; }
+  .tools button, .card button, .card a { font: 600 13px var(--body); color: var(--fg); background: var(--glass); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 7px 13px; cursor: pointer; text-decoration: none; backdrop-filter: blur(8px); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .caption { max-width: min(560px, 92vw); justify-self: start; align-self: end; background: var(--glass); border-radius: 14px; padding: 12px 16px; backdrop-filter: blur(10px); transition: opacity .8s ease, translate .8s ease; }
+  .caption.hide { opacity: 0; translate: 0 8px; }
+  .caption .year { font: 600 13px var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .caption h2 { margin: 2px 0 4px; font: 600 clamp(18px, 2.2vw, 24px)/1.2 var(--display); text-wrap: balance; }
+  .caption p { margin: 0; color: var(--muted); font-size: 15px; }
+  .card { position: fixed; z-index: 3; max-width: min(420px, 88vw); background: var(--glass); border: 1px solid rgba(255,255,255,.14); border-radius: 16px; padding: 16px 18px; backdrop-filter: blur(12px); pointer-events: auto; }
+  .card h3 { margin: 0 0 4px; font: 600 19px/1.25 var(--display); }
+  .card p { margin: 0; color: var(--muted); }
+  #note { transition: opacity .3s ease; opacity: 0; pointer-events: none; left: -9999px; }
+  #note.show { opacity: 1; pointer-events: auto; }
+  .center { position: fixed; inset: 0; z-index: 4; display: grid; place-items: center; padding: 16px; background: radial-gradient(ellipse at center, rgba(0,0,0,.35), rgba(0,0,0,.7)); }
+  .center .card { position: static; max-width: 560px; text-align: center; display: grid; gap: 12px; justify-items: center; padding: 28px 26px; }
+  .center h1 { margin: 0; font: 600 clamp(28px, 5vw, 48px)/1.08 var(--display); text-wrap: balance; }
+  .center p { margin: 0; color: var(--muted); max-width: 46ch; }
+  .center .go { font-size: 15px; padding: 11px 22px; background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .center .cta { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .center .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .hint { font-size: 12px; color: var(--muted); }
+  /* [film fixes] the note is information only: taps go through it to the scene (it used to swallow the next tap, so a
+     visitor on a phone couldn't reach a prop under it); small screens: one-line tool buttons */
+  #note.show { pointer-events: none; }
+  #phint { position: fixed; z-index: 3; left: 50%; translate: -50% 0; max-width: 92vw; font: 600 15px var(--body); color: var(--fg); background: var(--glass); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 7px 14px; pointer-events: none; white-space: nowrap; backdrop-filter: blur(8px); }
+  .tip { font-size: 13px; color: var(--muted); }
+  .tools button { white-space: nowrap; }
+  @media (max-width: 560px) { .brand { font-size: 13px; max-width: 40vw; } .tools { gap: 6px; } .tools button { font-size: 12px; padding: 6px 10px; } }
+  @media (prefers-reduced-motion: reduce) { .hud, .caption, #note { transition: none; } }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="blur" width="160" height="90" aria-hidden="true"></canvas>
+<div id="stage"><canvas id="c" width="1920" height="1080"></canvas><canvas id="overlay" width="1920" height="1080"></canvas></div>
+<div class="hud">
+  <div class="top"><span class="brand" id="brand"></span>
+    <div class="tools"><button id="sound" hidden>Sound on</button><button id="watch">Watch as film</button><button id="again">Start over</button></div></div>
+  <div></div>
+  <div class="caption hide" id="caption" aria-live="polite"><div class="year" id="cap-year"></div><h2 id="cap-head"></h2><p id="cap-text"></p></div>
+</div>
+<div id="phint" aria-live="polite" hidden></div>
+<div class="card" id="note" role="status"><h3 id="note-head"></h3><p id="note-text"></p></div>
+<div class="center" id="intro"><div class="card"><h1 id="intro-title"></h1><p id="intro-text"></p>
+  <button class="go" id="enter">Step inside</button><span class="hint">Click things in the scene to see what happens.</span></div></div>
+<div class="center" id="end" hidden><div class="card"><h1 id="end-title"></h1><p id="end-text"></p>
+  <div class="row"><a class="cta" id="cta" hidden></a><button id="replay">Explore again</button></div></div></div>
+<script src="runtime/core.js"></script>
+<script src="runtime/rig.js"></script>
+<script src="runtime/character.js"></script>
+<script src="runtime/stage.js"></script>
+<script src="runtime/main.js"></script>
+<script src="runtime/player.js"></script>
+<script src="film.js"></script>
+<script>
+ready.then(() => {
+  const $ = id => document.getElementById(id), cfg = window.FILM_CFG || {}, site = cfg.site || {}, P = window.PLAYER;
+  const root = document.documentElement.style;
+  for (const [k, v] of Object.entries(site.theme || {})) root.setProperty('--' + k, v);
+  if (site.fonts) { if (site.fonts.href) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = site.fonts.href; document.head.appendChild(l); }
+    if (site.fonts.display) root.setProperty('--display', site.fonts.display); if (site.fonts.body) root.setProperty('--body', site.fonts.body); }
+  const title = site.title || cfg.title || 'Film'; document.title = title;
+  $('brand').textContent = title; $('intro-title').textContent = title; $('intro-text').textContent = site.intro || '';
+  $('end-title').textContent = site.endTitle || title; $('end-text').textContent = site.endText || site.intro || '';
+  if (site.cta) { const a = $('cta'); a.hidden = false; a.textContent = site.cta.label; a.href = site.cta.href; a.target = '_blank'; a.rel = 'noopener'; }
+  if (P.hasAudio) { const b = $('sound'); b.hidden = false; b.onclick = () => { P.muted = !P.muted; b.textContent = P.muted ? 'Sound off' : 'Sound on'; }; }
+  P.setMode('explore');
+  // [film fix] phones: the 16:9 picture is small in portrait, so (1) prop hotspots grow to a comfortable 44 px touch
+  // target (portals are left alone: they also set the camera's zoom), (2) the current hint is repeated as a readable
+  // pill under the picture, (3) the intro suggests turning the phone sideways.
+  const touch = matchMedia('(pointer: coarse)').matches;
+  if (touch) {
+    const s0 = Math.min(innerWidth, innerHeight * 16 / 9) / 1920, min = 44 / s0;
+    for (const sh of STAGE.shots) { const h = sh.act.hotspot; if (!h) continue;
+      const w = Math.max(h.w, min), hh = Math.max(h.h, min); sh.act.hotspot = { x: h.x + h.w / 2 - w / 2, y: h.y + h.h / 2 - hh / 2, w, h: hh }; }
+    if (innerHeight > innerWidth) { const tip = document.createElement('span'); tip.className = 'tip'; tip.textContent = 'Tip: turn your phone sideways for a bigger picture.'; $('enter').after(tip); }
+  }
+
+  // the blurred backdrop: the scene itself, spilling past the frame
+  const bl = $('blur').getContext('2d'), main = $('c');
+  // caption for each scene: shows on arrival, then gets out of the way
+  let capScene = -1, capTimer = 0;
+  const caption = k => { const sh = STAGE.shots[k], pg = sh.sc.page || {};
+    $('cap-year').textContent = sh.sc.year || ''; $('cap-head').textContent = pg.heading || sh.sc.title || ''; $('cap-text').textContent = pg.text || '';
+    $('caption').classList.toggle('hide', !(pg.heading || sh.sc.title || pg.text)); clearTimeout(capTimer);
+    capTimer = setTimeout(() => $('caption').classList.add('hide'), (cfg.site && cfg.site.captionSeconds || 9) * 1000); };
+  let started = false, ended = false, idle = 0;
+  P.onTick(p => {
+    bl.drawImage(main, 0, 0, 160, 90);
+    { const r = $('stage').getBoundingClientRect(), ph = $('phint'), show = started && r.height < 360 && p.hinting && !!p.prompt;
+      if (show) { if (ph.textContent !== p.prompt) ph.textContent = p.prompt; ph.style.top = (r.bottom + 10) + 'px'; } ph.hidden = !show; }
+    if (!started) return;
+    const k = p.page; if (k !== capScene) { capScene = k; caption(k); }
+    if (p.t >= p.total - 0.01 && !ended && p.mode !== 'film') { ended = true; setTimeout(() => { $('end').hidden = false; }, 600); }
+  });
+  // notes for scene.spots
+  let noteTimer = 0;
+  P.onSpot((spot, scene, box) => {
+    const r = $('stage').getBoundingClientRect(), s = r.width / 1920, n = $('note');
+    $('note-head').textContent = spot.label || ''; $('note-text').textContent = spot.text || '';
+    n.classList.add('show'); const w = Math.min(420, innerWidth * 0.88);
+    if (r.height < 360) {   // [film fix] phones: the picture is small, so put the note in the band above it instead of over the scene
+      n.style.left = '12px'; n.style.maxWidth = (innerWidth - 24) + 'px'; n.style.top = Math.max(76, r.top - 12 - n.offsetHeight) + 'px';   // above the picture: the caption lives below it
+      clearTimeout(noteTimer); noteTimer = setTimeout(() => n.classList.remove('show'), 6000); return; }
+    n.style.maxWidth = '';
+    n.style.left = Math.max(12, Math.min(innerWidth - w - 12, r.left + (box.x + box.w / 2) * s - w / 2)) + 'px';
+    const top = r.top + (box.y + box.h) * s + 12; n.style.top = (top + 160 < innerHeight ? top : Math.max(12, r.top + box.y * s - 170)) + 'px';
+    clearTimeout(noteTimer); noteTimer = setTimeout(() => n.classList.remove('show'), 6000);
+  });
+  // quiet the top bar while exploring
+  addEventListener('pointermove', () => { document.body.classList.remove('quiet'); idle = performance.now(); });
+  setInterval(() => { if (started && performance.now() - idle > 3500) document.body.classList.add('quiet'); }, 500);
+  const enter = () => { started = true; ended = false; $('intro').hidden = true; $('end').hidden = true; if (!P.playing) P.play(); };
+  $('enter').onclick = enter;
+  $('replay').onclick = () => { P.setMode('explore'); $('watch').textContent = 'Watch as film'; P.restart(); capScene = -1; enter(); };
+  $('again').onclick = () => { P.restart(); capScene = -1; enter(); };
+  $('watch').onclick = () => { const film = P.mode !== 'film'; P.setMode(film ? 'film' : 'explore'); $('watch').textContent = film ? 'Explore' : 'Watch as film'; enter(); };
+});
+</script>
+</body></html>

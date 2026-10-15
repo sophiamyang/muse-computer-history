@@ -1,0 +1,5 @@
+OWNER'S NOTE: "the yellow ball location doesn't look right". Fix exactly:
+(1) The crank is ONE rigid object: a wheel (centre C, radius ~75 px) with a straight arm from C to a brass knob ON THE WHEEL RIM. The knob position is ALWAYS C + 75·(cos θ, sin θ) where θ is the crank angle; nothing else moves it. Draw the arm (a thick brass bar from C to the knob) and the knob (~34 px) every frame from that formula, never from Jolly's hand or her position.
+(2) Jolly stands still during the action: NO act.path walk (remove dx). Put C at about (act.at + 175, floor − 175) so the wheel sits clear of her body (her body spans act.at ± 115) at the height of her lead mitten, and make her pose reach toward the knob (armR following θ: higher when the knob is up, lower when down). The crank stays fully visible through the whole action.
+(3) θ turns one full turn over the action (eased), the gears behind it turn with it, one card steps per quarter turn, and the bell rings on the final tick.
+(4) After the action she hops toward the figure-wheels portal (the runtime does this), so nothing of hers should cover the crank before then.

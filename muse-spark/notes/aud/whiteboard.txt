@@ -1,0 +1,7 @@
+OWNER'S NOTE: "the next scene circle should show up after the curved arrows". Fix exactly, with this order in time (u = seconds since the action started, act.dur 2.2, then a 0.8 s hop and the push):
+  u 0.0–0.7  she writes "it" in the blank (stroke by stroke)
+  u 0.7–1.2  she circles it: an orange ring draws itself around "it", with the inside still showing the white board and the word "it"
+  u 1.2–1.9  the attention arcs spring from "it" to every word, the heaviest orange arc to "cat", and its weight label appears
+  u 1.9–2.4  only now does the circle's INSIDE fade from the board+"it" to the next world (s.peek('circle') with alpha ramping 0→1); the arcs stay visible
+  after that it holds until the push.
+So s.peek('circle') must be at alpha 0 before u = 1.9. Also: route the arcs ABOVE the sentence (arched curves from the top of "it" to the top of each word, peaking well above the text line) so they never cut through the letters; make "it" bold and big (~70 px) so it reads inside the circle; make the portal ring visible at rest (2.5 px, ~60 % opacity) before it is drawn bold.

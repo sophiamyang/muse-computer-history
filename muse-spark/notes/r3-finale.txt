@@ -1,0 +1,7 @@
+Great: it works end to end. Polish (keep the layout, timing and everything that works):
+(1) WARM DUSK ROOM: the room reads as a bright white daytime room. Make the walls warm neutrals (#F4F0EC in the lamp light, falling to warm greys #CFC6BC and #9E948A away from it, darker at the corners), the desk a warm wood/greige, a clear warm pool of lamp light (radial, #F56A2B at ~0.18 alpha) on the wall and desk, and the laptop screen casting a soft glow while open. When the lid closes the room dims a little (but stays warm and readable) and each firework burst flashes the room in its colour at ≤ 0.12 alpha.
+(2) LAPTOP TEXT: make the screen text readable in a 1080p video: 'light up the sky?' and 'On it… 3… 2… 1…' at ~30–34 px, dark text on a warm white field, left-aligned with padding, the reply on its own line.
+(3) FIREWORKS bigger: radius 160–280 px, 70–100 sparks per burst with short trails, bright white-hot cores, more of them spread across the window.
+(4) LOCKUP: 'Muse Spark' stays as now (large luminous serif); 'now on Fireworks' ~40 px, warm white #F4F0EC, clearly readable below it (add a soft dark radial backing #121212 at ~0.45 behind both lines so the city lights don't compete).
+(5) The 'fireworks.ai' SIGN must read as a lit sign: ~46 px text, glowing Glow #F56A2B border/tube, on the wall right of the window, unmissable when it lights at s.u ≈ 6.6, then holds.
+(6) BADGE: style it for this scene (warm white pill with a small Glow dot is fine) but make the text larger (~26 px) so "Now · Muse Spark on Fireworks" is readable.

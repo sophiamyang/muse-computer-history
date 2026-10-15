@@ -1,0 +1,5 @@
+.tools/
+node_modules
+shots/
+.DS_Store
+plan.json.tmp
